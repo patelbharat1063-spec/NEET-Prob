@@ -46,8 +46,6 @@ select,input{width:100%;padding:11px;border:1px solid var(--line);border-radius:
 .letter{font-weight:900;color:var(--primary);min-width:22px}
 .explanation{background:#f0fdf7;border-left:4px solid #15966a;padding:13px;border-radius:8px;margin-top:14px;line-height:1.6}
 .hidden{display:none!important}
-.chips{display:flex;gap:7px;flex-wrap:wrap}
-.chip{background:#eef2ff;color:#3730a3;padding:6px 10px;border-radius:20px;font-size:12px}
 .paper-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:12px}
 .paper-grid button{padding:9px 0;background:#eef2f7;color:var(--text)}
 .paper-grid button.answered{background:#d1fae5;color:#065f46}
@@ -58,286 +56,290 @@ footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
-<header>
- <div class="head">
-  <div>
-   <div class="brand">🧬 NEET <span>PRO</span></div>
-   <div class="sub">SMART MEDICAL ENTRANCE PREPARATION</div>
-  </div>
-  <div class="sub">BIOLOGY · PHYSICS · CHEMISTRY</div>
- </div>
-</header>
+<header><div class="head"><div><div class="brand">🧬 NEET <span>PRO</span></div><div class="sub">SMART MEDICAL ENTRANCE PREPARATION</div></div><div class="sub">BIOLOGY · PHYSICS · CHEMISTRY</div></div></header>
 
 <main class="wrap">
- <nav class="nav no-print">
-  <button class="active" data-view="practice">📚 Practice</button>
-  <button data-view="cbt">⏱ CBT Exam</button>
-  <button data-view="analysis">📊 Performance</button>
-  <button data-view="database">🗄 Question Database</button>
- </nav>
+<nav class="nav no-print">
+<button class="active" data-view="practice">📚 Practice</button>
+<button data-view="cbt">⏱ CBT Exam</button>
+<button data-view="analysis">📊 Performance</button>
+<button data-view="database">🗄 Question Database</button>
+</nav>
 
- <section class="grid" style="margin-bottom:15px">
-  <div class="stat"><div class="small">Questions loaded</div><div class="num" id="totalStat">0</div></div>
-  <div class="stat"><div class="small">Attempted</div><div class="num" id="attemptStat">0</div></div>
-  <div class="stat"><div class="small">Correct answers</div><div class="num" id="correctStat">0</div></div>
-  <div class="stat"><div class="small">Accuracy</div><div class="num" id="accuracyStat">0%</div></div>
- </section>
+<section class="grid" style="margin-bottom:15px">
+<div class="stat"><div class="small">Questions loaded</div><div class="num" id="totalStat">0</div></div>
+<div class="stat"><div class="small">Attempted</div><div class="num" id="attemptStat">0</div></div>
+<div class="stat"><div class="small">Correct answers</div><div class="num" id="correctStat">0</div></div>
+<div class="stat"><div class="small">Accuracy</div><div class="num" id="accuracyStat">0%</div></div>
+</section>
 
- <section id="databaseView" class="panel hidden">
-  <h2>🗄 Question Database Connection</h2>
-  <div id="dbStatus" class="status">Not connected yet. Tap Connect to scan the public GitHub repository.</div>
-  <p class="small">Public source: neural-arun/neet-bot. The app scans discoverable JSON files and attempts to recognize common MCQ formats. It can only load questions actually present in accessible files.</p>
-  <div class="actions">
-   <button class="primary" id="connectBtn">Connect / Retry</button>
-   <button class="secondary" id="clearBtn">Clear session progress</button>
-  </div>
-  <p class="small" id="dbDetails">Question records are not invented if the source contains no recognizable questions. Repository contents and format can change.</p>
- </section>
+<section id="databaseView" class="panel hidden">
+<h2>🗄 Question Database Connection</h2>
+<div id="dbStatus" class="status">Connecting to the public question repository…</div>
+<p class="small">Source: neural-arun/neet-bot. The app scans chapter-wise JSON files for all three NEET subjects. Only source questions with recognizable options and answer keys are counted as usable MCQs.</p>
+<div class="grid">
+<div class="stat"><div class="small">Biology MCQs</div><div class="num" id="bioCount">0</div></div>
+<div class="stat"><div class="small">Physics MCQs</div><div class="num" id="phyCount">0</div></div>
+<div class="stat"><div class="small">Chemistry MCQs</div><div class="num" id="chemCount">0</div></div>
+<div class="stat"><div class="small">Files read</div><div class="num" id="filesRead">0</div></div>
+</div>
+<div class="actions"><button class="primary" id="connectBtn">Connect / Retry</button><button class="secondary" id="clearBtn">Clear session progress</button></div>
+<p class="small" id="dbDetails">Question counts will appear here after the scan completes.</p>
+</section>
 
- <section id="practiceView">
-  <div class="panel no-print">
-   <h2>🎯 Choose your practice</h2>
-   <div class="filters">
-    <div><label for="subject">Subject</label>
-     <select id="subject">
-      <option value="All">All subjects</option>
-      <option>Biology</option><option>Physics</option><option>Chemistry</option>
-     </select>
-    </div>
-    <div><label for="chapter">Chapter</label><select id="chapter"><option value="All">All chapters</option></select></div>
-    <div><label for="topic">Topic</label><select id="topic"><option value="All">All topics</option></select></div>
-    <div><label for="count">Question count</label>
-     <select id="count"><option>10</option><option>20</option><option>30</option><option>45</option><option>90</option><option>180</option><option value="all">All available</option></select>
-    </div>
-   </div>
-   <div class="actions">
-    <button class="primary" id="startBtn">Start Practice</button>
-    <button class="secondary" id="shuffleBtn">Shuffle Questions</button>
-    <button class="secondary" id="paperBtn">Print / Save PDF</button>
-   </div>
-  </div>
+<section id="practiceView">
+<div class="panel no-print">
+<h2>🎯 Choose your practice</h2>
+<div class="filters">
+<div><label for="subject">Subject</label><select id="subject"><option value="All">All subjects</option><option>Biology</option><option>Physics</option><option>Chemistry</option></select></div>
+<div><label for="chapter">Chapter</label><select id="chapter"><option value="All">All chapters</option></select></div>
+<div><label for="topic">Topic</label><select id="topic"><option value="All">All topics</option></select></div>
+<div><label for="count">Question count</label><select id="count"><option>10</option><option>20</option><option>30</option><option>45</option><option>90</option><option>180</option><option value="all">All available</option></select></div>
+</div>
+<div class="actions"><button class="primary" id="startBtn">Start Practice</button><button class="secondary" id="shuffleBtn">Shuffle Questions</button><button class="secondary" id="paperBtn">Print / Save PDF</button></div>
+</div>
 
-  <div class="panel">
-   <div class="qmeta"><span id="qPosition">Question 0 of 0</span><span id="qSubject">Waiting for questions</span></div>
-   <div class="progress"><div id="progressBar"></div></div>
-   <div id="questionText" class="question">Connect to the question database to load available MCQs.</div>
-   <div id="options"></div>
-   <div id="explanation" class="explanation hidden"></div>
-   <div class="actions no-print">
-    <button class="secondary" id="prevBtn">← Previous</button>
-    <button class="primary" id="checkBtn">Check Answer</button>
-    <button class="secondary" id="nextBtn">Next →</button>
-   </div>
-  </div>
+<div class="panel">
+<div class="qmeta"><span id="qPosition">Question 0 of 0</span><span id="qSubject">Waiting for questions</span></div>
+<div class="progress"><div id="progressBar"></div></div>
+<div id="questionText" class="question">Loading available MCQs…</div>
+<div id="options"></div>
+<div id="explanation" class="explanation hidden"></div>
+<div class="actions no-print"><button class="secondary" id="prevBtn">← Previous</button><button class="primary" id="checkBtn">Check Answer</button><button class="secondary" id="nextBtn">Next →</button></div>
+</div>
 
-  <div class="panel no-print">
-   <h3>📝 Answer sheet / question navigator</h3>
-   <div class="small">Green = answered. Select a number to revisit that question.</div>
-   <div class="paper-grid" id="questionGrid"></div>
-   <div class="actions"><button class="primary" id="finishBtn">Finish & Calculate Score</button></div>
-   <div id="result" class="status hidden"></div>
-  </div>
- </section>
+<div class="panel no-print">
+<h3>📝 Answer sheet / question navigator</h3>
+<div class="small">Green = answered. Select a number to revisit that question.</div>
+<div class="paper-grid" id="questionGrid"></div>
+<div class="actions"><button class="primary" id="finishBtn">Finish & Calculate Score</button></div>
+<div id="result" class="status hidden"></div>
+</div>
+</section>
 
- <section id="cbtView" class="hidden">
-  <div class="panel">
-   <h2>⏱ Computer-Based Test</h2>
-   <div class="grid">
-    <div class="stat"><div class="small">Time remaining</div><div class="num" id="timer">180:00</div></div>
-    <div class="stat"><div class="small">Test questions</div><div class="num" id="cbtCount">0</div></div>
-   </div>
-   <p>Choose a subject and chapter in Practice first. Start the test to begin a timed session using the available questions.</p>
-   <div class="actions">
-    <button class="primary" id="cbtStart">Start / Restart CBT</button>
-    <button class="secondary" id="cbtFinish">Submit CBT</button>
-   </div>
-   <div id="cbtStatus" class="status">CBT not started.</div>
-  </div>
- </section>
+<section id="cbtView" class="hidden">
+<div class="panel">
+<h2>⏱ Computer-Based Test</h2>
+<div class="grid"><div class="stat"><div class="small">Time remaining</div><div class="num" id="timer">180:00</div></div><div class="stat"><div class="small">Test questions</div><div class="num" id="cbtCount">0</div></div></div>
+<p>Choose a subject and chapter in Practice first. Start the test to begin a timed session using the available questions.</p>
+<div class="actions"><button class="primary" id="cbtStart">Start / Restart CBT</button><button class="secondary" id="cbtFinish">Submit CBT</button></div>
+<div id="cbtStatus" class="status">CBT not started.</div>
+</div>
+</section>
 
- <section id="analysisView" class="hidden">
-  <div class="panel">
-   <h2>📊 Performance analysis</h2>
-   <div id="analysisSummary">Complete some questions to begin tracking your performance.</div>
-   <h3 style="margin-top:18px">Subject-wise performance</h3>
-   <div id="subjectAnalysis"></div>
-   <h3 style="margin-top:18px">Review incorrect answers</h3>
-   <div id="mistakes"></div>
-   <div class="actions"><button class="primary" id="retryWrong">Practise incorrect questions</button><button class="secondary" id="exportResults">Export results CSV</button></div>
-  </div>
- </section>
+<section id="analysisView" class="hidden"><div class="panel">
+<h2>📊 Performance analysis</h2><div id="analysisSummary">Complete some questions to begin tracking your performance.</div>
+<h3 style="margin-top:18px">Subject-wise performance</h3><div id="subjectAnalysis"></div>
+<h3 style="margin-top:18px">Review incorrect answers</h3><div id="mistakes"></div>
+<div class="actions"><button class="primary" id="retryWrong">Practise incorrect questions</button><button class="secondary" id="exportResults">Export results CSV</button></div>
+</div></section>
 </main>
 <footer>NEET Pro · Created by Bharat Patel · Public-source data may be incomplete or unavailable.</footer>
 
 <script>
 "use strict";
-const REPO_API="https://api.github.com/repos/neural-arun/neet-bot/git/trees/";
-const RAW_BASE="https://raw.githubusercontent.com/neural-arun/neet-bot/";
+
+const OWNER="neural-arun";
+const REPO="neet-bot";
+const BRANCH="master";
+const API="https://api.github.com/repos/"+OWNER+"/"+REPO+"/git/trees/"+BRANCH+"?recursive=1";
+const RAW="https://raw.githubusercontent.com/"+OWNER+"/"+REPO+"/"+BRANCH+"/";
 const $=id=>document.getElementById(id);
-let database=[],session=[],position=0,answers={},checked={},wrongSet=new Set();
-let cbtRunning=false,cbtDeadline=0,timerHandle=null,history=[];
 const ABC=["A","B","C","D","E","F"];
+let database=[],session=[],position=0,answers={},checked={},history=[];
+let timerHandle=null,cbtDeadline=0;
+
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function setStatus(message,type=""){const el=$("dbStatus");el.className="status "+type;el.textContent=message}
-function subjectFrom(s,path=""){
- let x=String(s||"")+" "+path;x=x.toLowerCase();
- if(/biology|botany|zoology|plant science|human physiology/.test(x))return "Biology";
- if(/physics|mechanics|electromagnet|optics|thermodynamic/.test(x))return "Physics";
- if(/chemistry|organic chem|inorganic chem/.test(x))return "Chemistry";
- return "Biology";
-}
-function first(obj,keys){
- for(const k of keys)if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=="")return obj[k];
- return null;
-}
+function setStatus(msg,type=""){const e=$("dbStatus");e.className="status "+type;e.textContent=msg}
+function humanize(s){return String(s||"").split("/").pop().replace(/\.json$/i,"").replace(/[_-]+/g," ").replace(/\b\w/g,c=>c.toUpperCase())}
+function first(o,keys){for(const k of keys)if(o&&o[k]!==undefined&&o[k]!==null&&o[k]!=="")return o[k];return null}
 function textValue(v){
  if(typeof v==="string"||typeof v==="number")return String(v);
  if(Array.isArray(v))return v.map(textValue).join(" ");
- if(v&&typeof v==="object")return String(first(v,["text","content","value","label"])||"");
+ if(v&&typeof v==="object")return String(first(v,["text","content","value","label","name"])||"");
  return "";
 }
-function normalizeOne(o,path="",inheritedSubject=""){
+function subjectFrom(v,path=""){
+ const s=(String(v||"")+" "+String(path||"")).toLowerCase();
+ if(/(^|[/ _-])(physics|physic)([/ _.-]|$)/.test(s))return "Physics";
+ if(/(^|[/ _-])(chemistry|chem)([/ _.-]|$)/.test(s))return "Chemistry";
+ if(/biology|botany|zoology|neet_pyq\/biology/.test(s))return "Biology";
+ if(/neet_pyq\/physics/.test(s))return "Physics";
+ if(/neet_pyq\/chemistry/.test(s))return "Chemistry";
+ return "Biology";
+}
+function normalizeOne(o,path,inheritedSubject){
  if(!o||typeof o!=="object"||Array.isArray(o))return null;
- const question=first(o,["question","question_text","questionText","stem","ques","problem","text"]);
+ const question=first(o,["question","question_text","questionText","stem","ques","problem","question_statement"]);
  if(typeof question!=="string"||question.trim().length<5)return null;
- let rawOpts=first(o,["options","choices","answers","answer_options","option"]);
+ let raw=first(o,["options","choices","answer_options","option"]);
  let opts=[];
- if(Array.isArray(rawOpts))opts=rawOpts.map(textValue);
- else if(rawOpts&&typeof rawOpts==="object")opts=Object.keys(rawOpts).sort().map(k=>textValue(rawOpts[k]));
- else {
+ if(Array.isArray(raw))opts=raw.map(textValue);
+ else if(raw&&typeof raw==="object"){
+  const keys=Object.keys(raw).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  opts=keys.map(k=>textValue(raw[k]));
+ }else{
   for(let i=0;i<4;i++){
-   let v=first(o,["option"+ABC[i],"option_"+ABC[i].toLowerCase(),ABC[i],String.fromCharCode(97+i)]);
+   const v=first(o,["option"+ABC[i],"option_"+ABC[i].toLowerCase(),ABC[i],String.fromCharCode(97+i)]);
    if(v!==null)opts.push(textValue(v));
   }
  }
  opts=opts.map(x=>x.trim()).filter(Boolean);
  if(opts.length<2)return null;
- let ans=first(o,["correct_answer","correctAnswer","answer","answer_index","answerIndex","correct_option","target","label","solution_index"]);
+ let ans=first(o,["correct_answer","correctAnswer","answer_index","answerIndex","correct_option","correctOption","target","solution_index","answer"]);
  if(ans&&typeof ans==="object")ans=first(ans,["text","index","label","value"]);
  let answer=-1;
  if(typeof ans==="number"&&Number.isFinite(ans))answer=ans;
  else if(typeof ans==="string"){
-  let a=ans.trim();
+  const a=ans.trim();
   if(/^[A-F]$/i.test(a))answer=a.toUpperCase().charCodeAt(0)-65;
   else if(/^\d+$/.test(a))answer=Number(a);
   else answer=opts.findIndex(v=>v.toLowerCase()===a.toLowerCase());
  }
  if(answer>=opts.length&&answer>=1&&answer<=opts.length)answer--;
  if(answer<0||answer>=opts.length)answer=-1;
- let explanation=first(o,["explanation","solution","rationale","answer_explanation","detailed_solution"]);
- let chapter=first(o,["chapter","chapter_name","chapterName","unit","section"]);
- let topic=first(o,["topic","topic_name","topicName","subtopic"]);
- let subj=first(o,["subject","subject_name","subjectName","category"])||inheritedSubject;
- let inferred=subjectFrom(subj,path);
+ const chapter=first(o,["chapter","chapter_name","chapterName","unit","section"]);
+ const topic=first(o,["topic","topic_name","topicName","subtopic"]);
+ const subj=first(o,["subject","subject_name","subjectName","category"])||inheritedSubject;
  return {
-  id:String(first(o,["id","question_id","questionId","_id"])||path+":"+question.slice(0,50)),
+  id:String(first(o,["id","question_id","questionId","_id"])||path+":"+question.slice(0,45)),
   question:question.trim(),options:opts,answer,
-  explanation:textValue(explanation)||"No explanation was provided in the source dataset.",
-  subject:inferred,chapter:textValue(chapter)||"Unclassified chapter",
-  topic:textValue(topic)||"General",source:path
+  explanation:textValue(first(o,["explanation","solution","rationale","answer_explanation","detailed_solution"]))||"No explanation was provided in the source dataset.",
+  subject:subjectFrom(subj,path),
+  chapter:textValue(chapter)||humanize(path),
+  topic:textValue(topic)||"General",
+  source:path
  };
 }
-function collectQuestions(data,path,subj,out,depth=0){
- if(depth>12||out.length>50000||data==null)return;
- if(Array.isArray(data)){for(const v of data)collectQuestions(v,path,subj,out,depth+1);return}
+function collect(data,path,subj,out,depth=0){
+ if(depth>14||out.length>100000||data==null)return;
+ if(Array.isArray(data)){for(const item of data)collect(item,path,subj,out,depth+1);return}
  if(typeof data!=="object")return;
  const q=normalizeOne(data,path,subj);
  if(q){out.push(q);return}
- const childSub=first(data,["subject","subject_name","category"])||subj;
+ const inherited=first(data,["subject","subject_name","category"])||subj;
  for(const [k,v] of Object.entries(data)){
-  if(v&&typeof v==="object")collectQuestions(v,path,childSub,out,depth+1);
+  if(v&&typeof v==="object")collect(v,path,inherited,out,depth+1);
  }
 }
-async function getTree(branch){
- const url=REPO_API+encodeURIComponent(branch)+"?recursive=1";
- const r=await fetch(url,{headers:{"Accept":"application/vnd.github+json"}});
- if(!r.ok)throw new Error("GitHub tree request returned HTTP "+r.status);
- const d=await r.json();if(!Array.isArray(d.tree))throw new Error("No file tree found");
+async function getTree(){
+ const r=await fetch(API,{headers:{"Accept":"application/vnd.github+json"}});
+ if(!r.ok)throw new Error("GitHub file-list request failed (HTTP "+r.status+"). Try again later.");
+ const d=await r.json();
+ if(!Array.isArray(d.tree))throw new Error("GitHub did not return a repository file list.");
  return d.tree;
 }
+function isSubjectChapterFile(path){
+ return /^neet_pyq\/(biology|physics|chemistry)\/[^/]+\.json$/i.test(path);
+}
 async function connectDatabase(){
- $("connectBtn").disabled=true;setStatus("Connecting to public GitHub repository and scanning JSON files…");
+ $("connectBtn").disabled=true;
+ setStatus("Scanning Biology, Physics and Chemistry chapter files…");
+ $("dbDetails").textContent="Please keep this page open while the public repository is scanned.";
+ database=[];
  try{
-  let tree,branch;
-  try{tree=await getTree("main");branch="main"}catch(e){tree=await getTree("master");branch="master"}
-  const jsonFiles=tree.filter(f=>f.type==="blob"&&/\.json$/i.test(f.path)&&!/package-lock|yarn\.lock|node_modules|\.vscode|\.github|tsconfig|manifest|translations|locales/i.test(f.path));
-  if(!jsonFiles.length)throw new Error("No JSON data files were found in the repository tree. This repository may contain application code rather than a question dataset.");
-  const ranked=jsonFiles.map(f=>{
-   let p=f.path.toLowerCase(),score=0;
-   if(/question|mcq|neet|quiz|biology|physics|chemistry|questionbank|question_bank|data/.test(p))score+=5;
-   if(/sample|example|test|fixture|package|config|metadata/.test(p))score-=4;
-   if(/lock/.test(p))score-=10;
-   return {...f,score};
-  }).sort((a,b)=>b.score-a.score);
-  const candidates=ranked.filter(f=>f.score>0).slice(0,25);
-  if(!candidates.length)throw new Error("JSON files exist, but no obvious question-data files were identified.");
-  let found=[],read=0,failures=0;
-  for(let i=0;i<candidates.length;i+=4){
-   const batch=candidates.slice(i,i+4);
+  const tree=await getTree();
+  const files=tree.filter(f=>f.type==="blob"&&isSubjectChapterFile(f.path));
+  if(!files.length)throw new Error("No chapter-wise JSON files were found under neet_pyq.");
+  let found=[],read=0,failed=0,empty=0,oversized=0;
+  const failures=[];
+  // Load every chapter file, not just the first 25 JSON files.
+  // Fetch files in small batches to avoid overwhelming mobile browsers.
+  for(let i=0;i<files.length;i+=3){
+   const batch=files.slice(i,i+3);
    const results=await Promise.all(batch.map(async f=>{
     try{
-     if(f.size&&f.size>5000000)return null;
-     const r=await fetch(RAW_BASE+branch+"/"+f.path);
+     // Avoid extremely large chapter files that can exhaust mobile memory.
+     if(f.size&&f.size>8000000){oversized++;return {file:f,skip:true}}
+     const r=await fetch(RAW+f.path);
      if(!r.ok)throw new Error("HTTP "+r.status);
-     return {path:f.path,data:await r.json()};
-    }catch(e){failures++;return null}
+     const data=await r.json();
+     return {file:f,data};
+    }catch(e){failed++;failures.push(f.path+" ("+e.message+")");return null}
    }));
    for(const item of results){
-    if(!item)continue;read++;
-    const sub=subjectFrom("",item.path);
-    collectQuestions(item.data,item.path,sub,found);
-    if(found.length>=50000)break;
+    if(!item)continue;
+    if(item.skip)continue;
+    read++;
+    const path=item.file.path;
+    const subj=subjectFrom("",path);
+    const before=found.length;
+    collect(item.data,path,subj,found);
+    if(found.length===before)empty++;
    }
-   if(found.length>=50000)break;
+   setStatus("Scanning files… "+Math.min(i+batch.length,files.length)+" / "+files.length+" chapter files checked.");
   }
   const seen=new Set();
   database=found.filter(q=>{
-   const key=(q.question+"|"+q.options.join("|")).toLowerCase();
-   if(seen.has(key))return false;seen.add(key);return true;
+   if(q.answer<0||q.options.length<2)return false;
+   const key=(q.question+"|"+q.options.join("|")).toLowerCase().replace(/\s+/g," ").trim();
+   if(seen.has(key))return false;
+   seen.add(key);return true;
   });
-  database=database.filter(q=>q.answer>=0&&q.options.length>=2);
+  const counts={
+   Biology:database.filter(q=>q.subject==="Biology").length,
+   Physics:database.filter(q=>q.subject==="Physics").length,
+   Chemistry:database.filter(q=>q.subject==="Chemistry").length
+  };
+  $("bioCount").textContent=counts.Biology;
+  $("phyCount").textContent=counts.Physics;
+  $("chemCount").textContent=counts.Chemistry;
+  $("filesRead").textContent=read;
+  $("dbDetails").textContent=
+   "Chapter files found: "+files.length+
+   " · Files read: "+read+
+   " · Empty/unrecognized: "+empty+
+   " · Failed: "+failed+
+   " · Skipped (>8 MB): "+oversized+
+   (failures.length?" · First errors: "+failures.slice(0,3).join("; "):"");
   if(!database.length){
-   setStatus("Repository reached, but no usable MCQs with recognized question, options and answer fields were found.","bad");
-   $("dbDetails").textContent="Scanned "+read+" JSON files; "+failures+" file fetches failed. The repository may not expose a compatible question dataset. No sample questions were added.";
+   setStatus("Repository reached, but no usable MCQs with recognizable answers were parsed.","bad");
+   $("dbDetails").textContent+=" The source format may need a dedicated parser. No sample questions were invented.";
   }else{
-   setStatus("Question connection successful: "+database.length+" MCQs parsed from "+read+" JSON files.","good");
-   $("dbDetails").textContent="Branch: "+branch+" · Files scanned: "+read+" · Files with errors: "+failures+". Only records with recognizable options and answer keys are included. Verify subject/chapter classifications against the source.";
-   updateFilters();startSession();
+   setStatus("Scan complete. "+database.length+" usable MCQs loaded across "+Object.values(counts).filter(n=>n>0).length+" subject(s).","good");
+   $("subject").value="All";
+   updateFilters();
+   startSession();
   }
  }catch(e){
   setStatus("Connection failed: "+e.message,"bad");
-  $("dbDetails").textContent="Check internet access, GitHub repository visibility, API limits, and the repository's actual file structure.";
- }finally{$("connectBtn").disabled=false;updateStats()}
+  $("dbDetails").textContent="Check internet access and GitHub availability, then tap Connect / Retry.";
+ }finally{
+  $("connectBtn").disabled=false;
+  updateStats();
+ }
 }
 function filtered(){
- let s=$("subject").value,c=$("chapter").value,t=$("topic").value;
+ const s=$("subject").value,c=$("chapter").value,t=$("topic").value;
  return database.filter(q=>(s==="All"||q.subject===s)&&(c==="All"||q.chapter===c)&&(t==="All"||q.topic===t));
 }
 function fillSelect(el,values,label){
- let old=el.value;el.innerHTML="";
+ const old=el.value;el.innerHTML="";
  const all=document.createElement("option");all.value="All";all.textContent="All "+label;el.appendChild(all);
  [...new Set(values)].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o)});
  if([...el.options].some(o=>o.value===old))el.value=old;
 }
 function updateFilters(){
  const s=$("subject").value;
- const sub=database.filter(q=>s==="All"||q.subject===s);
- fillSelect($("chapter"),sub.map(q=>q.chapter),"chapters");
+ const subset=database.filter(q=>s==="All"||q.subject===s);
+ fillSelect($("chapter"),subset.map(q=>q.chapter),"chapters");
  const c=$("chapter").value;
- fillSelect($("topic"),sub.filter(q=>c==="All"||q.chapter===c).map(q=>q.topic),"topics");
+ fillSelect($("topic"),subset.filter(q=>c==="All"||q.chapter===c).map(q=>q.topic),"topics");
 }
 function startSession(){
- let arr=filtered();
+ let arr=filtered().slice();
  const count=$("count").value;
- if(count!=="all")arr=arr.slice().sort(()=>Math.random()-.5).slice(0,Number(count));
- session=arr;position=0;answers={};checked={};wrongSet=new Set();
- $("result").classList.add("hidden");renderQuestion();renderGrid();updateStats();
+ if(count!=="all")arr.sort(()=>Math.random()-.5).splice(Number(count));
+ session=arr;position=0;answers={};checked={};
+ $("result").classList.add("hidden");
+ renderQuestion();renderGrid();updateStats();renderAnalysis();
 }
 function renderQuestion(){
  const q=session[position];
  if(!q){
-  $("qPosition").textContent="Question 0 of 0";$("qSubject").textContent="No questions";
-  $("questionText").textContent="No matching questions found. Connect a database or change your filters.";
+  $("qPosition").textContent="Question 0 of 0";
+  $("qSubject").textContent="No questions";
+  $("questionText").textContent="No matching questions found. Connect the database or change the subject/chapter filters.";
   $("options").innerHTML="";$("explanation").classList.add("hidden");
   $("progressBar").style.width="0%";renderGrid();return;
  }
@@ -354,10 +356,7 @@ function renderQuestion(){
    else if(answers[position]===i)b.classList.add("wrong");
   }
   b.innerHTML='<span class="letter">'+ABC[i]+'</span><span>'+safe(v)+'</span>';
-  b.addEventListener("click",()=>{
-   if(checked[position]||!q)return;
-   answers[position]=i;renderQuestion();renderGrid();updateStats();
-  });
+  b.addEventListener("click",()=>{if(checked[position])return;answers[position]=i;renderQuestion();renderGrid();updateStats()});
   box.appendChild(b);
  });
  const ex=$("explanation");
@@ -371,8 +370,6 @@ function checkAnswer(){
  const q=session[position];if(!q)return;
  if(answers[position]===undefined){alert("Please select an answer first.");return}
  checked[position]=true;
- if(answers[position]!==q.answer)wrongSet.add(q.id);
- else wrongSet.delete(q.id);
  history.push({id:q.id,subject:q.subject,chapter:q.chapter,correct:answers[position]===q.answer});
  renderQuestion();updateStats();renderAnalysis();
 }
@@ -383,35 +380,37 @@ function renderGrid(){
   if(answers[i]!==undefined)b.classList.add("answered");
   if(i===position)b.classList.add("current");
   b.title=q.subject+" · "+q.chapter;
-  b.addEventListener("click",()=>{position=i;renderQuestion()});g.appendChild(b);
+  b.addEventListener("click",()=>{position=i;renderQuestion()});
+  g.appendChild(b);
  });
 }
 function updateStats(){
  $("totalStat").textContent=database.length;
- const attempted=Object.keys(checked).length;
- let correct=0;Object.keys(checked).forEach(k=>{if(session[Number(k)]&&answers[k]===session[Number(k)].answer)correct++});
- $("attemptStat").textContent=attempted;$("correctStat").textContent=correct;
- $("accuracyStat").textContent=(attempted?Math.round(correct/attempted*100):0)+"%";
+ const done=Object.keys(checked).length;
+ let correct=0;
+ Object.keys(checked).forEach(k=>{if(session[Number(k)]&&answers[k]===session[Number(k)].answer)correct++});
+ $("attemptStat").textContent=done;
+ $("correctStat").textContent=correct;
+ $("accuracyStat").textContent=(done?Math.round(correct/done*100):0)+"%";
  $("cbtCount").textContent=session.length;
 }
 function finish(){
  if(!session.length)return;
  const attempted=Object.keys(answers).length;
- let correct=0;session.forEach((q,i)=>{if(answers[i]===q.answer)correct++;if(answers[i]!==undefined)checked[i]=true});
- const unanswered=session.length-attempted;
+ let correct=0;
+ session.forEach((q,i)=>{if(answers[i]===q.answer)correct++;if(answers[i]!==undefined)checked[i]=true});
  $("result").classList.remove("hidden");
- $("result").textContent="Result: "+correct+"/"+session.length+" correct · "+attempted+" attempted · "+unanswered+" unanswered · Accuracy "+(attempted?Math.round(correct/attempted*100):0)+"%.";
+ $("result").textContent="Result: "+correct+"/"+session.length+" correct · "+attempted+" attempted · "+(session.length-attempted)+" unanswered · Accuracy "+(attempted?Math.round(correct/attempted*100):0)+"%.";
  renderQuestion();renderAnalysis();updateStats();
 }
 function renderAnalysis(){
  const done=Object.keys(checked).length;let correct=0;
  session.forEach((q,i)=>{if(checked[i]&&answers[i]===q.answer)correct++});
  $("analysisSummary").textContent="Current session: "+done+" checked answers; "+correct+" correct; "+(done?Math.round(correct/done*100):0)+"% accuracy.";
- const subjects=["Biology","Physics","Chemistry"];
- $("subjectAnalysis").innerHTML=subjects.map(s=>{
-  let qs=session.filter(q=>q.subject===s),n=0,c=0;
-  qs.forEach(q=>{let i=session.indexOf(q);if(checked[i]){n++;if(answers[i]===q.answer)c++}});
-  return '<div style="margin:10px 0"><strong>'+s+'</strong> <span class="small">'+c+' correct / '+n+' checked / '+qs.length+' available</span><div class="progress"><div style="width:'+(n?c/n*100:0)+'%"></div></div></div>';
+ $("subjectAnalysis").innerHTML=["Biology","Physics","Chemistry"].map(s=>{
+  const qs=session.filter(q=>q.subject===s);let n=0,c=0;
+  qs.forEach(q=>{const i=session.indexOf(q);if(checked[i]){n++;if(answers[i]===q.answer)c++}});
+  return '<div style="margin:10px 0"><strong>'+s+'</strong> <span class="small">'+c+' correct / '+n+' checked / '+qs.length+' in session</span><div class="progress"><div style="width:'+(n?c/n*100:0)+'%"></div></div></div>';
  }).join("");
  const mistakes=session.filter((q,i)=>checked[i]&&answers[i]!==q.answer);
  $("mistakes").innerHTML=mistakes.length?mistakes.map(q=>'<div class="panel"><strong>'+safe(q.subject+" · "+q.chapter)+'</strong><p>'+safe(q.question)+'</p><p class="small">Correct answer: '+safe(q.options[q.answer])+'</p></div>').join(""):"No checked incorrect answers in this session.";
@@ -422,20 +421,20 @@ function exportCSV(){
  const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="neet-pro-results.csv";a.click();URL.revokeObjectURL(a.href);
 }
-function shuffleSession(){session=session.slice().sort(()=>Math.random()-.5);position=0;answers={};checked={};renderQuestion();updateStats()}
+function shuffleSession(){session=session.slice().sort(()=>Math.random()-.5);position=0;answers={};checked={};renderQuestion();renderGrid();updateStats()}
 function startCBT(){
  if(!session.length){alert("Load questions and start a practice set first.");return}
- cbtRunning=true;cbtDeadline=Date.now()+180*60*1000;
+ cbtDeadline=Date.now()+180*60*1000;
  $("cbtStatus").textContent="CBT running. Submit your answers before time expires.";
  if(timerHandle)clearInterval(timerHandle);
  timerHandle=setInterval(()=>{
-  let sec=Math.max(0,Math.floor((cbtDeadline-Date.now())/1000));
+  const sec=Math.max(0,Math.floor((cbtDeadline-Date.now())/1000));
   $("timer").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");
   if(sec<=0)submitCBT();
  },1000);
 }
 function submitCBT(){
- if(timerHandle)clearInterval(timerHandle);timerHandle=null;cbtRunning=false;
+ if(timerHandle)clearInterval(timerHandle);timerHandle=null;
  finish();$("cbtStatus").textContent="CBT submitted. Review your score and incorrect answers in Performance.";
 }
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{
@@ -466,7 +465,7 @@ $("retryWrong").addEventListener("click",()=>{
 $("exportResults").addEventListener("click",exportCSV);
 $("clearBtn").addEventListener("click",()=>{
  if(confirm("Clear current session answers and performance?")){
-  answers={};checked={};history=[];wrongSet=new Set();position=0;renderQuestion();renderGrid();updateStats();renderAnalysis();
+  answers={};checked={};history=[];position=0;renderQuestion();renderGrid();updateStats();renderAnalysis();
  }
 });
 renderQuestion();renderAnalysis();updateStats();
